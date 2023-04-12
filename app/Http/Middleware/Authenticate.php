@@ -2,11 +2,13 @@
 
 namespace App\Http\Middleware;
 
+use App\Traits\ApiResponseBuilderTrait;
 use Closure;
 use Illuminate\Contracts\Auth\Factory as Auth;
 
 class Authenticate
 {
+    use ApiResponseBuilderTrait;
     /**
      * The authentication guard factory instance.
      *
@@ -33,10 +35,15 @@ class Authenticate
      * @param  string|null  $guard
      * @return mixed
      */
-    public function handle($request, Closure $next, $guard = null)
+    public function handle($request, Closure $next, $role = null, $guard = null)
     {
+
+        if ($role and auth()->user() and auth()->user()->role !== $role) {
+            return $this->response('Unauthorized', [], 403);
+        }
+
         if ($this->auth->guard($guard)->guest()) {
-            return response('Unauthorized.', 401);
+            return $this->response('Unauthorized', [], 401);
         }
 
         return $next($request);

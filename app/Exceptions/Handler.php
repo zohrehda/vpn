@@ -8,9 +8,11 @@ use Illuminate\Validation\ValidationException;
 use Laravel\Lumen\Exceptions\Handler as ExceptionHandler;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Throwable;
+use App\Traits\ApiResponseBuilderTrait;
 
 class Handler extends ExceptionHandler
 {
+    use ApiResponseBuilderTrait;
     /**
      * A list of the exception types that should not be reported.
      *
@@ -49,6 +51,11 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Throwable $exception)
     {
-        return parent::render($request, $exception);
+
+        if ($exception instanceof ValidationException) {
+            return  $this->response(get_nested_array_values($exception->validator->errors()->messages()), [], 422);
+        }
+        $status_code = method_exists($exception, 'getStatusCode') ? $exception->getStatusCode() : 500;
+        return $this->response($exception->getMessage(), [], $status_code);
     }
 }
