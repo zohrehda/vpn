@@ -13,7 +13,7 @@ class ServiceController extends BaseController
 
     public function index()
     {
-        return   $this->response('data retrived', Service::all());
+        return  $this->response('services retrived', Service::all());
     }
 
     public function store(Request $request)
@@ -22,9 +22,9 @@ class ServiceController extends BaseController
             'name' => 'required',
             'price' => 'required|integer',
         ]);
-        $server = Service::create($validator->validated());
+        $service = Service::create($validator->validated());
 
-        return   $this->response('service created', $server->refresh());
+        return   $this->response('service created', $service->refresh());
     }
 
     public function update(Request $request, Service $service)
@@ -40,6 +40,6 @@ class ServiceController extends BaseController
     public function destroy(Request $request, Service $service)
     {
         $service->delete();
-        return   $this->response('server deleted');
+        return   $this->response('service deleted');
     }
 }

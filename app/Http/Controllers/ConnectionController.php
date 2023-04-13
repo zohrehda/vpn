@@ -20,8 +20,8 @@ class ConnectionController extends BaseController
     public function store(Request $request)
     {
         $validator =  $request->apiValidate([
-            'user_id' => 'required',
-            'server_id' => 'required',
+            'user_id' => 'required|exists:users,id',
+            'server_id' => 'required|exists:servers,id',
             'isp' => '',
         ]);
         $connection = Connection::create($validator->validated());

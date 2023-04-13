@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('connections', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained();
-            $table->foreignId('server_id')->constrained();
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->foreignId('server_id')->constrained()->onDelete('cascade');
             $table->string('isp')->nullable();
             $table->timestamps();
         });

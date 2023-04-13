@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 
-class Server extends Model
+class UserService extends Model
 {
     use  HasFactory;
 
@@ -16,6 +16,6 @@ class Server extends Model
      * @var string[]
      */
     protected $fillable = [
-        'user_id', 'start_date', 'end_date' 
+        'user_id', 'service_id', 'start_date', 'end_date'
     ];
 }

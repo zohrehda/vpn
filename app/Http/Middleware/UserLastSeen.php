@@ -17,6 +17,7 @@ class UserLastSeen
      */
     public function handle($request, Closure $next)
     {
+
         if (auth()->check()) {
             User::where('id', auth()->user()->id)->update(['last_seen' => Carbon::now()]);
         }

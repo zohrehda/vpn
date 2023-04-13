@@ -31,18 +31,14 @@ $router->group([], function () use ($router) {
     $router->post('/register', ['uses' => 'AuthController@register']);
 });
 
-$router->group(['middleware' => ''], function () use ($router) {
+Route::group(['prefix' => 'users'], function () {
+    Route::get('/', ['uses' => 'UserController@index']);
+    Route::post('/', ['uses' => 'UserController@store']);
+    Route::put('/{user}', ['uses' => 'UserController@update']);
+    Route::delete('/{user}', ['uses' => 'UserController@destroy']);
 });
 
-$router->get('/users', ['uses' => 'UserController@index']);
 
-
-$router->group(['prefix' => 'servers'], function () use ($router) {
-    // $router->get('/', ['uses' => 'ServerController@index']);
-    //    $router->put('/{server}', ['uses' => 'ServerController@update']);
-    //   $router->delete('/{server}', ['uses' => 'ServerController@destroy']);
-    //  $router->post('/', ['uses' => 'ServerController@store']);
-});
 Route::group(['prefix' => 'servers'], function () {
     Route::get('/', ['uses' => 'ServerController@index']);
     Route::post('/', ['uses' => 'ServerController@store']);
@@ -57,15 +53,18 @@ Route::group(['prefix' => 'services'], function () {
     Route::delete('/{service}', ['uses' => 'ServiceController@destroy']);
 });
 
+Route::group(['prefix' => 'service_user'], function () {
+    Route::get('/', ['uses' => 'UserServiceController@index']);
+    Route::post('/', ['uses' => 'UserServiceController@store']);
+    Route::put('/{userService}', ['uses' => 'UserServiceController@update']);
+    Route::delete('/{userService}', ['uses' => 'UserServiceController@destroy']);
+});
 
 
 
-// $router->group(function() use($router){
-//     // $router->post('/device') ;
-//     // $router->post('/login',[]) ;
-//     // $router->post('/register') ;
-//     // $router->get('/users') ;
-    
-// }) ;
-
-// post 
+Route::group(['prefix' => 'connections'], function () {
+    Route::get('/', ['uses' => 'ConnectionController@index']);
+    Route::post('/', ['uses' => 'ConnectionController@store']);
+    Route::put('/{connection}', ['uses' => 'ConnectionController@update']);
+    Route::delete('/{connection}', ['uses' => 'ConnectionController@destroy']);
+});

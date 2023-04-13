@@ -2,11 +2,13 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Hash;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 //use Illuminate\Notifications\Notifiable;
 use Laravel\Lumen\Auth\Authorizable;
@@ -21,18 +23,19 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      * @var string[]
      */
     protected $fillable = [
-        'name',
+        'username',
         'email',
         'phone_number',
-        'last_seen',
         'role',
-        'username',
         'password',
+        'referral_id',
+        'referral_code',
+        'referrals',
+        'fix_discount',
+        'rank',
         'server_username',
         'server_password',
-        'referral_id',
-        'fix_discount'
-
+        'last_seen',
     ];
 
     /**
@@ -65,11 +68,12 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     {
         return [];
     }
-    public function setReferralIdAttribute()
+
+    public function setPasswordAttribute($value)
     {
-        dd('ff');
-        return $this->attributes['referral_id'] = 'fdf';
+        return $this->attributes['password'] = Hash::make($value);
     }
+
 
     public function calculateDiscount()
     {
@@ -78,6 +82,10 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
 
     public function services()
     {
-        return $this->belongsToMany(Service::class,'user_service') ;
+        return $this->belongsToMany(Service::class, 'user_services')->withPivot(['start_date', 'end_date']);
+    }
+    public function activeService()
+    {
+        return $this->services()->wherePivot('end_date', '>', Carbon::now())->first();
     }
 }
