@@ -26,12 +26,15 @@ class UserServiceController extends BaseController
         $validator =  $request->apiValidate([
             'user_id' => 'required|exists:users,id',
             'service_id' => 'required|exists:services,id',
-            'start_date' => 'required|date',
-            'end_date' => 'required|date',
+            'start_date' => 'nullable|date',
+            'end_date' => 'nullable|date|',
         ]);
+
+
         $user = User::find($request->input('user_id'));
+
         if ($user->services()->wherePivot('end_date', '>', Carbon::now())->count() > 0) {
-            return   $this->response('there is a active service for this user');
+            //    return   $this->response('there is a active service for this user');
         }
 
         $server =  DB::transaction(function () use ($validator, $user) {

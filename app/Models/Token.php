@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 
-class UserDevice extends Model
+class Token extends Model
 {
     use  HasFactory;
 
@@ -16,6 +16,6 @@ class UserDevice extends Model
      * @var string[]
      */
     protected $fillable = [
-        'user_id', 'device_id', 'platform', 'device_name', 'physical'
+        'user_id', 'value'
     ];
 }

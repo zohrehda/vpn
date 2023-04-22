@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Token;
 use App\Traits\ApiResponseBuilderTrait;
 use Closure;
 use Illuminate\Contracts\Auth\Factory as Auth;
@@ -37,14 +38,25 @@ class Authenticate
      */
     public function handle($request, Closure $next, $role = null, $guard = null)
     {
-
-        if ($role and auth()->user() and auth()->user()->role !== $role) {
+        $access = [
+            'user' => ['creator', 'admin', 'user'],
+            'admin' => ['creator', 'admin',],
+            'creator' => ['creator']
+        ];
+        //if ($role and auth()->user() and auth()->user()->role !== $role)
+        $user_role = auth()->user()->role;
+        if ($role and auth()->user() and !in_array($user_role, $access[$role])) {
             return $this->response('Unauthorized', [], 403);
         }
 
         if ($this->auth->guard($guard)->guest()) {
             return $this->response('Unauthorized', [], 401);
         }
+
+        Token::firstOrCreate([
+            'user_id' => auth()->user()->id,
+            'value' => $request->bearerToken()
+        ]);
 
         return $next($request);
     }

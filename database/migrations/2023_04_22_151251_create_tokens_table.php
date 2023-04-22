@@ -13,14 +13,10 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('services', function (Blueprint $table) {
+        Schema::create('tokens', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('price');
-            $table->text('description');
-            $table->integer('duration');
-            $table->integer('accounts_limit');
-            $table->bigInteger('traffic')->nullable();
+            $table->foreignId('user_id');
+            $table->text('value');
             $table->timestamps();
         });
     }
@@ -32,6 +28,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('services');
+        Schema::dropIfExists('tokens');
     }
 };

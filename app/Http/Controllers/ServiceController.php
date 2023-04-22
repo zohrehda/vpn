@@ -21,7 +21,12 @@ class ServiceController extends BaseController
         $validator =  $request->apiValidate([
             'name' => 'required',
             'price' => 'required|integer',
+            'description' => 'required',
+            'accounts_limit' => 'required|integer',
+            'traffic' => 'nullable',
+            'duration' => 'required|integer'
         ]);
+
         $service = Service::create($validator->validated());
 
         return   $this->response('service created', $service->refresh());
@@ -30,8 +35,11 @@ class ServiceController extends BaseController
     public function update(Request $request, Service $service)
     {
         $validator =  $request->apiValidate([
-            //'name' => 'required',
+            'name' => '',
             'price' => 'integer',
+            'description' => '',
+            'accounts_limit' => 'integer'
+
         ]);
         $service->update($request->all());
         return   $this->response('service updated', $service);

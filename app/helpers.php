@@ -15,9 +15,9 @@ function get_nested_array_values($array, $values = [])
 }
 
 
-function random_string($length = 10)
+function random_string($length = 5)
 {
-    $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    $characters = '0123456789abcdefghijklmnopqrstuvwxyz';
     $charactersLength = strlen($characters);
     $randomString = '';
     for ($i = 0; $i < $length; $i++) {

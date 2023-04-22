@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\UserRoleEnum;
 use Carbon\Carbon;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
@@ -38,6 +39,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         'last_seen',
     ];
 
+
     /**
      * The attributes excluded from the model's JSON form.
      *
@@ -45,6 +47,10 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      */
     protected $hidden = [
         'password',
+    ];
+
+    protected $attributes = [
+        'role' => UserRoleEnum::USER
     ];
 
     // Rest omitted for brevity
@@ -74,18 +80,42 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         return $this->attributes['password'] = Hash::make($value);
     }
 
+    public static function boot()
+    {
+        parent::boot();
+        static::creating(function ($query) {
+            $query->referral_id = $query->referral_id ?? random_string();
+            $query->last_seen = Carbon::now();
+        });
+    }
+   
 
     public function calculateDiscount()
     {
         // return $this->fix_discount + () ;
     }
 
+    public function tokens()
+    {
+        return $this->hasMany(Token::class, 'user_id');
+    }
+
     public function services()
     {
         return $this->belongsToMany(Service::class, 'user_services')->withPivot(['start_date', 'end_date']);
     }
-    public function activeService()
+
+    public function currentService()
     {
-        return $this->services()->wherePivot('end_date', '>', Carbon::now())->first();
+        return $this->services()->wherePivot('start_date', '<=', Carbon::now())->wherePivot('end_date', '>=', Carbon::now())->first();
+    }
+
+    public function reservedService()
+    {
+        return $this->services()->wherePivot('start_date', '>', Carbon::now())->first();
+    }
+    public function devices()
+    {
+        return $this->hasMany(UserDevice::class);
     }
 }
