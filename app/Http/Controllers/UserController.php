@@ -22,20 +22,38 @@ class UserController extends BaseController
 
     public function show(User $user)
     {
-       
+
         return   $this->response('data retrived', UserResource::make($user));
     }
 
     public function store(Request $request)
     {
-        $validator =  $request->apiValidate([
-            'username' => 'required|unique:users,username',
-            'password' => 'required|min:8',
-            'email' => 'email',
-            'phone_number' => '',
-            'role' => new Enum(UserRoleEnum::class),
-            'referral_code' => 'required|exists:users,referral_id',
-        ]);
+        
+        if (auth()->user()->role == UserRoleEnum::CREATOR->value) {
+            $rules = [
+                'username' => 'required|unique:users,username',
+                'password' => 'required|min:8',
+                'email' => 'email',
+                'phone_number' => '',
+                'role' => new Enum(UserRoleEnum::class),
+                'referral_code' => 'nullable|exists:users,referral_id'
+            ];
+            
+        } else {
+
+            $rules = [
+                'username' => 'required|unique:users,username',
+                'password' => 'required|min:8',
+                'email' => 'email',
+                'phone_number' => '',
+                'role' => new Enum(UserRoleEnum::class),
+                'referral_code' => 'required|exists:users,referral_id'
+
+            ];
+        }
+
+        $validator =  $request->apiValidate($rules);
+
 
         $user = User::create($validator->validated() + [
             'last_seen' => Carbon::now(),

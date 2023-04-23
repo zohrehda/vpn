@@ -18,10 +18,10 @@ class UserSeeder extends Seeder
     public function run()
     {
         User::create([
-            'username' => 'admin',
-            'password' => '12345678',
-            'email' => 'admin@gmail.com',
-            'phone_number' => '',
+            'username' => 'Enigma',
+            'password' => 'ferni1386!',
+            'email' => 'enigmainvest@invest.tech',
+            'phone_number' => '0999999999',
             'role' => UserRoleEnum::CREATOR,
             'referral_id' => random_string(),
             'last_seen' => Carbon::now()
